@@ -6,7 +6,7 @@ from skillNer.general_params import SKILL_DB
 # import skill extractor
 from skillNer.skill_extractor_class import SkillExtractor
 from skillNer.cleaner import Cleaner
-
+import numpy as np
 
 def processSkill(skillString):
     # init params of skill extractor
@@ -31,14 +31,15 @@ def handler(event, context):
         for skill in result['results']['full_matches']:
             item = dict()
             item['doc_node_value'] = skill['doc_node_value']
-            print(type(skill['score']))
-            item['score'] = skill['score'].item()
+            item['score'] = skill['score']
             body.append(item)
-        print(body)
         for ngram in result['results']['ngram_scored']:
             item = dict()
             item['doc_node_value'] = ngram['doc_node_value']
-            item['score'] = ngram['score'].item()
+            if type(ngram['score']).__module__ == np.__name__:
+                item['score'] = ngram['score'].item()
+            else:
+                item['score'] = ngram['score']
             body.append(item)
         print(body)
         return {
