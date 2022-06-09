@@ -1,0 +1,3 @@
+spacy
+skillNer
+IPython
