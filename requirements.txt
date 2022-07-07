@@ -1,3 +1,7 @@
-spacy
-skillNer
+spacy~=3.3.1
+skillNer~=1.0.3
 IPython
+numpy~=1.23.0
+fastapi~=0.78.0
+
+pydantic~=1.8.2
