@@ -36,14 +36,17 @@ async def log_requests(request, call_next):
 
 @app.post("/extract-keyword")
 async def extract_keyword(request: ExtractKeyWordRequest):
-    result = extract_keyword(request.description)
-    body = set()
-    for skill in result['results']['full_matches']:
-        body.add(skill['doc_node_value'])
-    for ngram in result['results']['ngram_scored']:
-        body.add(ngram['doc_node_value'])
+    try:
+        result = extract_keyword(request.description)
+        body = set()
+        for skill in result['results']['full_matches']:
+            body.add(skill['doc_node_value'])
+        for ngram in result['results']['ngram_scored']:
+            body.add(ngram['doc_node_value'])
 
-    return {"result": body}
+        return {"result": body}
+    except Exception as e:
+        logger.error(e)
 
 
 @app.get("/")
@@ -52,10 +55,15 @@ async def root():
     return {"result": "ok"}
 
 
-@app.post("/matching-point")
+@app.post("/matching-point/application")
 async def calculate_matching_point_handler(request: MatchingPointRequest):
-    score = calculate_matching_point(request)
-    logger.info(f'Calculate application with id {request.applicationId} have score {score}')
+    try:
+        score = calculate_matching_point(request)
+        logger.info(f'Calculate application with id {request.applicationId} have score {score}')
+    except Exception as e:
+        logger.error(e)
+        return {"result": None}
+
     return {"result": score}
 
 
