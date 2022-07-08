@@ -1,9 +1,11 @@
 import logging
+import os
 import random
 import string
 import time
 
 import uvicorn
+from dotenv import load_dotenv
 from fastapi import FastAPI
 
 from models import ExtractKeyWordRequest, MatchingPointRequest
@@ -58,4 +60,6 @@ async def calculate_matching_point_handler(request: MatchingPointRequest):
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", port=6000)
+    load_dotenv()
+    port = int(os.getenv('PORT')) or 6000
+    uvicorn.run("main:app", port=port)
