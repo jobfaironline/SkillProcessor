@@ -32,7 +32,7 @@ def logistic_sigmoid(x):
     return 1 / (1 + math.exp(-x))
 
 
-def extract_keyword(text):
+def extract_keyword_service(text):
     text = cleaner(text)
     annotations = skill_extractor.annotate(text)
     return annotations
