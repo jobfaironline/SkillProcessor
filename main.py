@@ -46,7 +46,7 @@ def calculate_matching_point_handler(request: MatchingPointRequest):
         logger.error(e)
         return {"result": None}
 
-    return {"result": score}
+    return {"result": score * 10}
 
 @app.post("/matching-point/job-position")
 def calculate_matching_point_handler_job_position(request: CVMatchingPointRequest):
@@ -57,7 +57,7 @@ def calculate_matching_point_handler_job_position(request: CVMatchingPointReques
         logger.error(e)
         return {"result": None}
 
-    return {"result": score}
+    return {"result": score * 10}
 
 
 if __name__ == "__main__":
