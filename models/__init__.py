@@ -1,2 +1,4 @@
 from .extract_keyword_request import ExtractKeyWordRequest
 from .matching_point_request import MatchingPointRequest
+from .cv_matching_point_request import CVMatchingPointRequest
+

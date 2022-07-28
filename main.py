@@ -5,8 +5,8 @@ import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI
 
-from models import ExtractKeyWordRequest, MatchingPointRequest
-from services import calculate_matching_point, extract_keyword_service
+from models import ExtractKeyWordRequest, MatchingPointRequest, CVMatchingPointRequest
+from services import calculate_matching_point, extract_keyword_service, calculate_matching_point_job_position
 
 logging.config.fileConfig('logging.conf', disable_existing_loggers=False)
 
@@ -42,6 +42,17 @@ def calculate_matching_point_handler(request: MatchingPointRequest):
     try:
         score = calculate_matching_point(request)
         logger.info(f'Calculate application with id {request.applicationId} have score {score}')
+    except Exception as e:
+        logger.error(e)
+        return {"result": None}
+
+    return {"result": score}
+
+@app.post("/matching-point/job-position")
+def calculate_matching_point_handler_job_position(request: CVMatchingPointRequest):
+    try:
+        score = calculate_matching_point_job_position(request)
+        logger.info(f'Calculate application with id {request.jobPositionId} have score {score}')
     except Exception as e:
         logger.error(e)
         return {"result": None}

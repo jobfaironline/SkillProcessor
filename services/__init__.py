@@ -1,1 +1,1 @@
-from .module import extract_keyword_service, calculate_matching_point
+from .module import extract_keyword_service, calculate_matching_point, calculate_matching_point_job_position

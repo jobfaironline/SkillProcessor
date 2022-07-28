@@ -10,7 +10,7 @@ from skillNer.general_params import SKILL_DB
 from skillNer.skill_extractor_class import SkillExtractor
 from spacy.matcher import PhraseMatcher
 
-from models import MatchingPointRequest
+from models import CVMatchingPointRequest, MatchingPointRequest
 from utils import timeit
 
 # init params of skill extractor
@@ -41,6 +41,8 @@ def extract_keyword_service(text):
 def get_max_similarity_score(word_vector, keyword_vectors):
     scores = [word_vector.similarity(keyword_vector) for keyword_vector in keyword_vectors]
     logger.info(scores)
+    if len(scores) == 0:
+        return 0
     return max(scores)
 
 
@@ -92,6 +94,33 @@ def calculate_matching_point(request: MatchingPointRequest):
     logger.info(f"Application {request.applicationId} has attendant work history score: {attendant_work_history_score} with weight: {weights['attendant_work_history']}")
     logger.info(f"Application {request.applicationId} has attendant certification score: {attendant_certification_score} with weight: {weights['attendant_certification']}")
     logger.info(f"Application {request.applicationId} has attendant activity score: {attendant_activity_score} with weight: {weights['attendant_activity']}")
+
+    return sum([attendant_skill_score, attendant_education_score, attendant_work_history_score, attendant_certification_score, attendant_activity_score]) / \
+           sum([weights['attendant_skill'], weights['attendant_education'], weights['attendant_work_history'], weights['attendant_certification'], weights['attendant_activity']])
+
+def calculate_matching_point_job_position(request: CVMatchingPointRequest):
+    request.requirementKeyWords = [nlp(word) for word in request.requirementKeyWords]
+    request.descriptionKeyWords = [nlp(word) for word in request.descriptionKeyWords]
+    request.jobSkills = [nlp(word) for word in request.jobSkills]
+    request.otherRequireKeywords = [nlp(word) for word in request.otherRequireKeywords]
+
+    request.attendantSkills = [nlp(word) for word in request.attendantSkills]
+    request.attendantEducationKeyWords = [nlp(word) for word in request.attendantEducationKeyWords]
+    request.attendantWorkHistoryKeyWords = [nlp(word) for word in request.attendantWorkHistoryKeyWords]
+    request.attendantCertificationKeyWords = [nlp(word) for word in request.attendantCertificationKeyWords]
+    request.attendantActivityKeyWords = [nlp(word) for word in request.attendantActivityKeyWords]
+
+    attendant_skill_score = calculate_attendant_category_score(request, request.attendantSkills) * weights['attendant_skill']
+    attendant_education_score = calculate_attendant_category_score(request, request.attendantEducationKeyWords) * weights['attendant_education']
+    attendant_work_history_score = calculate_attendant_category_score(request, request.attendantWorkHistoryKeyWords) * weights['attendant_work_history']
+    attendant_certification_score = calculate_attendant_category_score(request, request.attendantCertificationKeyWords) * weights['attendant_certification']
+    attendant_activity_score = calculate_attendant_category_score(request, request.attendantActivityKeyWords) * weights['attendant_activity']
+
+    logger.info(f"Application {request.jobPositionId} has attendant skill score: {attendant_skill_score} with weight: {weights['attendant_skill']}")
+    logger.info(f"Application {request.jobPositionId} has attendant education score: {attendant_education_score} with weight: {weights['attendant_education']}")
+    logger.info(f"Application {request.jobPositionId} has attendant work history score: {attendant_work_history_score} with weight: {weights['attendant_work_history']}")
+    logger.info(f"Application {request.jobPositionId} has attendant certification score: {attendant_certification_score} with weight: {weights['attendant_certification']}")
+    logger.info(f"Application {request.jobPositionId} has attendant activity score: {attendant_activity_score} with weight: {weights['attendant_activity']}")
 
     return sum([attendant_skill_score, attendant_education_score, attendant_work_history_score, attendant_certification_score, attendant_activity_score]) / \
            sum([weights['attendant_skill'], weights['attendant_education'], weights['attendant_work_history'], weights['attendant_certification'], weights['attendant_activity']])
