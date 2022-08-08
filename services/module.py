@@ -40,7 +40,6 @@ def extract_keyword_service(text):
 
 def get_max_similarity_score(word_vector, keyword_vectors):
     scores = [word_vector.similarity(keyword_vector) for keyword_vector in keyword_vectors]
-    logger.info(scores)
     if len(scores) == 0:
         return 0
     return max(scores)
