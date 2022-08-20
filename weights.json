@@ -1,8 +1,8 @@
 {
-  "attendant_skill": 1,
-  "attendant_education": 1,
-  "attendant_work_history": 1,
-  "attendant_certification": 1,
+  "attendant_skill": 5,
+  "attendant_education": 2,
+  "attendant_work_history": 3,
+  "attendant_certification": 3,
   "attendant_activity": 1,
   "job_requirement": 1,
   "job_description": 1,
